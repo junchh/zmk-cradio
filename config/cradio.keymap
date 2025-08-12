@@ -3,97 +3,98 @@
 
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/keys.h>
-#include <dt-bindings/zmk/bt.h>
+
+&mt { tapping-term-ms = <150>; };
+
+&lt { tapping-term-ms = <150>; };
 
 / {
     behaviors {
-        ht: hold_tap {
+        tap_dance: tap_dance {
+            compatible = "zmk,behavior-tap-dance";
+            label = "TAP_DANCE";
+            #binding-cells = <0>;
+            tapping-term-ms = <150>;
+            bindings = <&kp SEMICOLON>, <&caps_word>;
+        };
+
+        modtapbalance: modtapbalance {
             compatible = "zmk,behavior-hold-tap";
-            #binding-cells = <2>;
-            flavor = "tap-preferred";
-            tapping-term-ms = <220>;
-            quick-tap-ms = <150>;
-            require-prior-idle-ms = <100>;
+            label = "MODTAPBALANCE";
             bindings = <&kp>, <&kp>;
+
+            #binding-cells = <2>;
+            tapping-term-ms = <160>;
+            flavor = "balanced";
+        };
+
+        layertapbalance: layertapbalance {
+            compatible = "zmk,behavior-hold-tap";
+            label = "LAYERTAPBALANCE";
+            bindings = <&mo>, <&kp>;
+
+            #binding-cells = <2>;
+            tapping-term-ms = <160>;
+            flavor = "balanced";
         };
     };
 
-    conditional_layers {
-        compatible = "zmk,conditional-layers";
-        tri_layer {
-            if-layers = <1 2>;
-            then-layer = <3>;
+    conditional_layers { compatible = "zmk,conditional-layers"; };
+
+    combos {
+        compatible = "zmk,combos";
+
+        combo_esc {
+            bindings = <&kp ESCAPE>;
+            key-positions = <12 13>;
         };
     };
 
     keymap {
         compatible = "zmk,keymap";
+
         default_layer {
             bindings = <
-        //╭──────────┬──────────┬──────────┬──────────┬──────────╮   ╭──────────┬──────────┬──────────┬──────────┬──────────╮
-        //│  Q       │  W       │  E       │  R       │  T       │   │  Y       │  U       │  I       │  O       │  P       │
-            &kp Q      &kp W      &kp E      &kp R      &kp T          &kp Y      &kp U      &kp I      &kp O      &kp P
-        //├──────────┼──────────┼──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┼──────────┼──────────┤
-        //│  A       │  S       │  D       │  F       │  G       │   │  H       │  J       │  K       │  L       │ ' "      │
-            &kp A      &kp S      &kp D      &kp F     &kp G          &kp H       &kp J      &kp K      &kp L      &kp SEMICOLON
-        //├──────────┼──────────┼──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┼──────────┼──────────┤
-        //│  Z       │  X       │  C       │  V       │  B       │   │  N       │  M       │ , <      │ . >      │ / ?      │
-            &kp Z      &kp X      &kp C      &kp V      &kp B          &kp N      &kp M      &kp COMMA  &kp DOT    &kp FSLH
-        //╰──────────┴──────────┴──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┴──────────┴──────────╯
-                                            &lt 2 TAB   &kp ENTER     &kp SPACE  &lt 1 BSPC
-        //                                 ╰──────────┴──────────╯   ╰──────────┴──────────╯
+&kp Q  &kp W  &kp E  &kp R                        &kp T                 &kp Y      &kp U                         &kp I      &kp O    &kp P
+&kp A  &kp S  &kp D  &modtapbalance LEFT_SHIFT F  &kp G                 &kp H      &modtapbalance RIGHT_SHIFT J  &kp K      &kp L    &tap_dance
+&kp Z  &kp X  &kp C  &kp V                        &kp B                 &kp N      &kp M                         &kp COMMA  &kp DOT  &layertapbalance 3 SLASH
+                     &lt 1 TAB                    &mt LCMD BACKSPACE    &kp SPACE  &lt 2 ENTER
             >;
+
+            label = "ABC";
         };
 
-        right_layer {
+        symbol_layer {
             bindings = <
-        //╭──────────┬──────────┬──────────┬──────────┬──────────╮   ╭──────────┬──────────┬──────────┬──────────┬──────────╮
-        //│ INSERT   │  1       │  2       │  3       │          │   │ HOME     │ PAGE DN  │ PAGE UP  │ END      │  :       │
-            &kp INS    &kp N1     &kp N2     &kp N3     &trans         &kp HOME   &kp PG_DN  &kp PG_UP  &kp END    &kp COLON
-        //├──────────┼──────────┼──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┼──────────┼──────────┤
-        //│ DELETE   │  4       │  5       │  6       │          │   │ LEFT     │ DOWN     │ UP       │ RIGHT    │  ;       │
-            &kp DEL    &kp N4     &kp N5     &kp N6     &trans         &kp LARW   &kp DARW   &kp UARW   &kp RARW   &kp SEMI
-        //├──────────┼──────────┼──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┼──────────┼──────────┤
-        //│ CAPS     │  7       │  8       │  9       │  0       │   │          │          │          │          │          │
-           &caps_word  &kp N7     &kp N8     &kp N9     &kp N0         &trans     &trans     &trans     &trans     &trans
-        //╰──────────┴──────────┴──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┴──────────┴──────────╯
-                                             &trans     &kp ESC        &trans     &trans
-        //                                 ╰──────────┴──────────╯   ╰──────────┴──────────╯
+&kp GRAVE        &kp TILDE      &kp BACKSLASH  &kp PIPE              &kp HOME                 &kp END           &kp LESS_THAN      &kp GREATER_THAN  &kp QUESTION       &kp COLON
+&kp EXCLAMATION  &kp AT_SIGN    &kp HASH       &kp DOLLAR            &kp PERCENT              &kp SINGLE_QUOTE  &kp DOUBLE_QUOTES  &kp UNDERSCORE    &kp MINUS          &kp PLUS
+&kp CARET        &kp AMPERSAND  &kp ASTERISK   &kp LEFT_PARENTHESIS  &kp RIGHT_PARENTHESIS    &kp LEFT_BRACE    &kp RIGHT_BRACE    &kp LEFT_BRACKET  &kp RIGHT_BRACKET  &kp EQUAL
+                                               &none                 &none                    &kp SPACE         &kp ENTER
             >;
+
+            label = "SYM";
         };
 
-        left_layer {
+        number_layer {
             bindings = <
-        //╭──────────┬──────────┬──────────┬──────────┬──────────╮   ╭──────────┬──────────┬──────────┬──────────┬──────────╮
-        //│          │  [       │  {       │  }       │          │   │  ^       │  (       │  )       │  ]       │  ~       │
-            &studio_unlock     &kp LBKT   &kp LBRC   &kp RBRC   &trans         &kp CARET  &kp LPAR   &kp RPAR   &kp RBKT   &kp TILDE
-        //├──────────┼──────────┼──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┼──────────┼──────────┤
-        //│  !       │  @       │  #       │  $       │  %       │   │  *       │  -       │  =       │  \       │  `       │
-            &kp EXCL   &kp AT     &kp HASH   &kp DLLR   &kp PRCNT      &kp ASTRK  &kp MINUS  &kp EQUAL  &kp BSLH   &kp GRAVE
-        //├──────────┼──────────┼──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┼──────────┼──────────┤
-        //│          │          │          │          │          │   │  &       │  _       │  +       │  │       │          │
-            &trans     &trans     &trans     &trans     &trans         &kp AMPS   &kp UNDER  &kp PLUS   &kp PIPE   &trans
-        //╰──────────┴──────────┴──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┴──────────┴──────────╯
-                                             &trans     &trans         &trans     &trans
-        //                                 ╰──────────┴──────────╯   ╰──────────┴──────────╯
+&none            &kp N7        &kp NUMBER_8  &kp NUMBER_9  &kp HOME             &none      &none      &none      &none      &none
+&kp LC(LS(TAB))  &kp NUMBER_4  &kp NUMBER_5  &kp NUMBER_6  &kp LC(TAB)          &kp LEFT   &kp DOWN   &kp UP     &kp RIGHT  &kp LG(LS(NUMBER_4))
+&kp LC(H)        &kp NUMBER_1  &kp NUMBER_2  &kp NUMBER_3  &kp LC(L)            &kp LC(C)  &kp LC(D)  &kp LC(U)  &none      &kp LS(LG(LC(NUMBER_4)))
+                                             &kp NUMBER_0  &kp LA(BACKSPACE)    &none      &none
             >;
+
+            label = "NUM";
         };
 
-        tri_layer {
+        wm_layer {
             bindings = <
-        //╭──────────┬──────────┬──────────┬──────────┬──────────╮   ╭──────────┬──────────┬──────────┬──────────┬──────────╮
-        //│ RESET    │          │          │          │PROFILE 0 │   │          │          │          │          │  RESET   │
-           &sys_reset  &trans     &trans     &trans    &bt BT_SEL 0    &trans     &trans     &trans     &trans    &sys_reset
-        //├──────────┼──────────┼──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┼──────────┼──────────┤
-        //│BOOTLOADER│          │          │          │PROFILE 1 │   │          │          │          │          │BOOTLOADER│
-          &bootloader  &trans     &trans     &trans    &bt BT_SEL 1    &trans     &trans     &trans     &trans    &bootloader
-        //├──────────┼──────────┼──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┼──────────┼──────────┤
-        //│          │          │          │ CLEAR BT │PROFILE 2 │   │          │          │          │          │          │
-            &trans     &trans     &trans    &bt BT_CLR &bt BT_SEL 2    &trans     &trans     &trans     &trans     &trans
-        //╰──────────┴──────────┴──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┴──────────┴──────────╯
-                                             &trans     &trans         &trans     &trans
-        //                                 ╰──────────┴──────────╯   ╰──────────┴──────────╯
+&none  &kp LA(NUMBER_7)  &kp LA(NUMBER_8)  &kp LA(NUMBER_9)  &none    &kp LA(Q)  &kp LA(W)  &kp LA(E)  &kp LA(R)  &none
+&none  &kp LA(NUMBER_4)  &kp LA(NUMBER_5)  &kp LA(NUMBER_6)  &none    &kp LA(H)  &kp LA(J)  &kp LA(K)  &kp LA(L)  &none
+&none  &kp LA(NUMBER_1)  &kp LA(NUMBER_2)  &kp LA(NUMBER_3)  &none    &none      &none      &none      &none      &none
+                                           &none             &none    &none      &none
             >;
+
+            label = "WM";
         };
     };
 };
