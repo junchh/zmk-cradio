@@ -66,7 +66,7 @@
 
         symbol_layer {
             bindings = <
-&kp GRAVE        &kp TILDE      &kp BACKSLASH  &kp PIPE              &kp HOME                 &kp END           &kp LESS_THAN      &kp GREATER_THAN  &kp QUESTION       &kp COLON
+&kp GRAVE        &kp TILDE      &kp BACKSLASH  &kp PIPE              &kp HOME                 &kp LESS_THAN     &kp GREATER_THAN   &kp END           &kp QUESTION       &kp COLON
 &kp EXCLAMATION  &kp AT_SIGN    &kp HASH       &kp DOLLAR            &kp PERCENT              &kp SINGLE_QUOTE  &kp DOUBLE_QUOTES  &kp UNDERSCORE    &kp MINUS          &kp PLUS
 &kp CARET        &kp AMPERSAND  &kp ASTERISK   &kp LEFT_PARENTHESIS  &kp RIGHT_PARENTHESIS    &kp LEFT_BRACE    &kp RIGHT_BRACE    &kp LEFT_BRACKET  &kp RIGHT_BRACKET  &kp EQUAL
                                                &none                 &none                    &kp SPACE         &kp ENTER
